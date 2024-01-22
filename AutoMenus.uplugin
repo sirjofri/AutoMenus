@@ -1,0 +1,25 @@
+﻿{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "AutoMenus",
+	"Description": "Automatically create menus for your editor utility widget tools",
+	"Category": "Other",
+	"CreatedBy": "sirjofri",
+	"CreatedByURL": "https://sirjofri.de",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"EngineVersion": "5.3.0",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "AutoMenus",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit",
+			"WhitelistPlatforms": [ "Win64" ]
+		}
+	]
+}
