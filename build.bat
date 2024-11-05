@@ -1,13 +1,15 @@
 setlocal
 
 md %temp%\AutoMenus
-for %%a in (5.2 5.3) do call :build %%a
+for %%a in (5.2 5.3 5.4) do call :build %%a
 rd /s /q %temp%\AutoMenus
 goto :eof
 
 :build
-md %temp%\AutoMenus\%1
+set epic=
 for /f "tokens=2* skip=2" %%a in ('reg query "HKLM\SOFTWARE\EpicGames\Unreal Engine\%1" /v "InstalledDirectory"') do set epic=%%b
+if "%epic%"=="" goto :eof
+md %temp%\AutoMenus\%1
 call "%epic%\Engine\Build\BatchFiles\RunUAT.bat" BuildPlugin -Plugin="%CD%\AutoMenus.uplugin" -Package="%temp%\AutoMenus\%1" -Rocket
 rd /s /q %temp%\AutoMenus\%1\Binaries
 rd /s /q %temp%\AutoMenus\%1\Intermediate

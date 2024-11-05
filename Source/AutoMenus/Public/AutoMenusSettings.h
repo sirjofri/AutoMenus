@@ -1,4 +1,4 @@
-// Copyright Lightword Productions GmbH. All rights reserved.
+// Copyright sirjofri. Licensed under MIT license. See License.txt for full license text.
 
 #pragma once
 
@@ -12,25 +12,50 @@ struct FAutoMenuConfig
 	GENERATED_BODY()
 
 public:
+	/**
+	 * This is the visual name of the menu.
+	 */
 	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", meta=(ConfigRestartRequired="true"))
 	FName MenuName;
 
+	/**
+	 * This is the location of the menu.
+	 */
 	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", meta=(ConfigRestartRequired="true"))
 	FName MenuLocation = "MainFrame.MainMenu";
 
+	/**
+	 * Path to the widget blueprints.
+	 */
 	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", meta=(ContentDir, RelativeToGameContentDir, ConfigRestartRequired="true"))
 	FDirectoryPath MenuEntryPath;
 
-	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", meta=(ConfigRestartRequired="true"))
+	/**
+	 * Mapping of folders (submenus) to section names. Key must be a path relative to Menu Entry Path.
+	 *
+	 * Use this to map an automatically generated submenu to a specific menu section.
+	 */
+	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", meta=(ConfigRestartRequired="true"), AdvancedDisplay)
 	TMap<FString,FName> FolderSectionMapping;
 
-	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", AdvancedDisplay, meta=(ConfigRestartRequired="true"))
+	/**
+	 * Menu section where the menu will be added.
+	 *
+	 * This is important if the menu is a submenu of another menu, for example, a submenu within the "Tools" menu.
+	 */
+	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", AdvancedDisplay, meta=(ConfigRestartRequired="true"), AdvancedDisplay)
 	FName MenuSection = NAME_None;
 
-	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", AdvancedDisplay, meta=(ConfigRestartRequired="true"))
+	/**
+	 * Use this to specify where exactly to place the menu inside its parent menu.
+	 */
+	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", AdvancedDisplay, meta=(ConfigRestartRequired="true"), AdvancedDisplay)
 	FName InsertLocation = NAME_None;
 
-	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", AdvancedDisplay, meta=(ConfigRestartRequired="true"))
+	/**
+	 * Location relative to the Insert Location.
+	 */
+	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", AdvancedDisplay, meta=(ConfigRestartRequired="true"), AdvancedDisplay)
 	EToolMenuInsertType InsertType = EToolMenuInsertType::Default;
 };
 
