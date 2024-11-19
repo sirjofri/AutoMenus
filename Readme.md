@@ -13,17 +13,19 @@ Screenshots, ...
 - Features menus, submenus and sub-submenus, following your directory hierarchy.
 - Features sections within menus, for better structuring of your menu entries.
 - Configuration-less: Only configure the menus, they will be filled with your tools automatically.
-- Live: No need to restart the editor to make your tools appear.
+- Live: No need to restart the editor to make your tools appear when adding/changing your tools.
 
 ## Usage
 
 Basic usage for the end user is, navigate the menu hierarchy and click on buttons.
 
-Advanced usage means, placing new tool files into the proper folder structure, setting custom values to override menu entry details (e. g. tooltip), using shift-click to edit tools.
+Advanced usage means, placing new tool files into the proper folder structure, setting custom values to override menu entry details (e.g. tooltip), using shift-click to edit tools.
 
 ## Configuration
 
 ### Configure your menus
+
+![Menu Configuration](Documentation/AutoMenus_Config.png)
 
 - Go to *Editor Preferences* -> *Auto Menus*
 - Add menus to the *Menu Config* array.
@@ -47,10 +49,13 @@ For the *Folder Section Mapping*, use relative paths. For example, `MyFancySubme
 
 ### Configure your menu entries
 
+![Menu Entries](Documentation/AutoMenus_TabName.png)
+
 All configuration of the menu entries happens within the widget blueprints themselves by adjusting/creating properties.
 
-- The tab name of your tool will be used to set the menu entry title.
-- The property `ToolTipText` will be used as a tool tip for that entry.
+- The `Tab Display Name` of your tool will be used to set the menu entry title.
+  - **If you don't set a tab name, the widget will be hidden from the menu!**
+- The property `Tool Tip Text` will be used as a tool tip for that entry.
 - You can create a *Name* property named `MenuSection`, which will be used to group your entries.
 
 ## License

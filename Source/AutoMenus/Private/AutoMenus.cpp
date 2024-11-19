@@ -109,7 +109,17 @@ void FAutoMenusModule::OnObjectPreSave(UObject* Object, FObjectPreSaveContext Ob
 		return;
 
 	UMetaData* metadata = WidgetBlueprint->GetPackage()->GetMetaData();
-	metadata->SetValue(WidgetBlueprint, NAME_TabNameTag, *GetWidgetTitle(WidgetBlueprint));
+	
+	FString title = GetWidgetTitle(WidgetBlueprint);
+	if (title.IsEmpty()) {
+		// if we have no dedicated tab name, assume this is a helper widget (button, ...)
+		metadata->RemoveValue(WidgetBlueprint, NAME_TabNameTag);
+		metadata->RemoveValue(WidgetBlueprint, NAME_ToolTipTag);
+		metadata->RemoveValue(WidgetBlueprint, NAME_MenuSectionTag);
+		return;
+	}
+
+	metadata->SetValue(WidgetBlueprint, NAME_TabNameTag, *title);
 	metadata->SetValue(WidgetBlueprint, NAME_ToolTipTag, *GetTooltipText(WidgetBlueprint));
 	metadata->SetValue(WidgetBlueprint, NAME_MenuSectionTag, *GetMenuSection(WidgetBlueprint));
 }
@@ -135,6 +145,11 @@ void FAutoMenusModule::AddEntryToMenu(UToolMenu* ToolMenu, FAssetData AssetData)
 {
 	FString AssetPath = AssetData.PackageName.ToString();
 
+	FString title;
+	// if we don't have a tab name, ignore this script. It's probably a helper widget
+	if (!AssetData.GetTagValue(NAME_TabNameTag, title))
+		return;
+
 	FName MenuSection = NAME_None;
 	AssetData.GetTagValue(NAME_MenuSectionTag, MenuSection);
 	
@@ -142,10 +157,7 @@ void FAutoMenusModule::AddEntryToMenu(UToolMenu* ToolMenu, FAssetData AssetData)
 	if (!MenuSection.IsNone())
 		sec.Label = FText::FromName(MenuSection);
 
-	FString title;
 	FString tooltip;
-	if (!AssetData.GetTagValue(NAME_TabNameTag, title))
-		title = FPaths::GetBaseFilename(AssetPath);
 	AssetData.GetTagValue(NAME_ToolTipTag, tooltip);
 
 	static const FText EditTextPrompt = LOCTEXT("ToolTipEditTextPrompt", "Shift-click to edit script");
@@ -198,7 +210,8 @@ FString FAutoMenusModule::GetWidgetTitle(const UEditorUtilityWidgetBlueprint* Wi
 {
 	if (!WidgetBlueprint)
 		return TEXT("");
-	return WidgetBlueprint->GetTabDisplayName().ToString();
+	UEditorUtilityWidget* Widget = WidgetBlueprint->GeneratedClass->GetDefaultObject<UEditorUtilityWidget>();
+	return Widget->GetTabDisplayName().ToString();
 }
 
 FString FAutoMenusModule::GetTooltipText(const UEditorUtilityWidgetBlueprint* WidgetBlueprint)
@@ -222,10 +235,9 @@ FString FAutoMenusModule::GetMenuSection(const UEditorUtilityWidgetBlueprint* Wi
 		return TEXT("");
 
 	FName SectionName = NAME_None;
-	for (TFieldIterator<FProperty> It(Widget->GetClass()); It; ++It) {
+	for (TFieldIterator<FNameProperty> It(Widget->GetClass()); It; ++It) {
 		if (It->GetFName() == NAME_MenuSectionProperty) {
-			const FNameProperty* NameProperty = Cast<FNameProperty>(*It);
-			SectionName = NameProperty->GetPropertyValue(It->ContainerPtrToValuePtr<FName>(Widget));
+			SectionName = It->GetPropertyValue(It->ContainerPtrToValuePtr<FName>(Widget));
 			break;
 		}
 	}
