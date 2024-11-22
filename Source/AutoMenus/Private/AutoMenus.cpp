@@ -28,13 +28,17 @@ void FAutoMenusModule::StartupModule()
 	MetaDataTagsForAssetRegistry.Add(NAME_TabNameTag);
 	MetaDataTagsForAssetRegistry.Add(NAME_ToolTipTag);
 
-	GetMutableDefault<UAutoMenusSettings>()->OnSettingChanged().AddRaw(this, &FAutoMenusModule::ReloadTopLevelMenus);
-	GenerateTopLevelMenus();
+	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateLambda([&]()
+	{
+		GetMutableDefault<UAutoMenusSettings>()->OnSettingChanged().AddRaw(this, &FAutoMenusModule::ReloadTopLevelMenus);
+		GenerateTopLevelMenus();
+	}));
 }
 
 void FAutoMenusModule::ShutdownModule()
 {
-	RemoveTopLevelMenus();
+	if (UToolMenus::Get())
+		RemoveTopLevelMenus();
 }
 
 void FAutoMenusModule::GenerateMenu(UToolMenu* ToolMenu, FString Path, FAutoMenuConfig Config)
@@ -144,16 +148,67 @@ void FAutoMenusModule::GenerateTopLevelMenus()
 			continue;
 		if (conf.MenuEntryPath.Path.IsEmpty())
 			continue;
-
+		
 		FName MenuName = FName(TEXT("AutoMenus_") + conf.MenuName.ToString());
 		GeneratedMenus.Add(MenuName, conf);
 		UToolMenu* Menu = UToolMenus::Get()->ExtendMenu(conf.MenuLocation);
 		FToolMenuSection& sec = Menu->FindOrAddSection(conf.MenuSection);
 		sec.Label = FText::FromName(conf.MenuSection);
-		FToolMenuEntry& entry = sec.AddSubMenu(MenuName, FText::FromName(conf.MenuName), FText::GetEmpty(), FNewToolMenuDelegate::CreateRaw(this, &FAutoMenusModule::GenerateMenu, FString(TEXT("")), conf));
-		entry.InsertPosition = FToolMenuInsert(conf.InsertLocation, conf.InsertType);
+		if (conf.IsToolbarMenu) {
+			FToolMenuEntry Entry = FToolMenuEntry::InitWidget(MenuName, MakeToolBarWidget(MenuName, conf), FText::GetEmpty(), true, false);
+			Entry.InsertPosition = FToolMenuInsert(conf.InsertLocation, conf.InsertType);
+			// FIXME: TODO: Insert position doesn't work in LevelEditor.StatusBar.ToolBar
+			sec.AddEntry(Entry);
+		} else {
+			FToolMenuEntry& entry = sec.AddSubMenu(MenuName, FText::FromName(conf.MenuName), FText::GetEmpty(), FNewToolMenuDelegate::CreateRaw(this, &FAutoMenusModule::GenerateMenu, FString(TEXT("")), conf));
+			entry.InsertPosition = FToolMenuInsert(conf.InsertLocation, conf.InsertType);
+		}
 	}
 	UToolMenus::Get()->RefreshAllWidgets();
+}
+
+bool FAutoMenusModule::MenuTypeNeedsWidget(EMultiBoxType Type)
+{
+	return Type == EMultiBoxType::ToolBar
+	|| Type == EMultiBoxType::UniformToolBar
+	|| Type == EMultiBoxType::VerticalToolBar
+	|| Type == EMultiBoxType::SlimHorizontalToolBar
+	|| Type == EMultiBoxType::SlimHorizontalUniformToolBar;
+}
+
+TSharedRef<SWidget> FAutoMenusModule::MakeToolBarWidget(FName MenuName, const FAutoMenuConfig& Conf)
+{
+	return SNew(SHorizontalBox)
+		+SHorizontalBox::Slot()
+		.VAlign(VAlign_Center)
+		.AutoWidth()
+		[
+			SNew(SComboButton)
+			.ComboButtonStyle(&FAppStyle::Get().GetWidgetStyle<FComboButtonStyle>("SimpleComboButton"))
+			.MenuPlacement(Conf.MenuPlacement)
+			.ButtonContent()
+			[
+				SNew(SHorizontalBox)
+				+SHorizontalBox::Slot()
+				.AutoWidth()
+				.VAlign(VAlign_Center)
+				.Padding(5, 0, 0, 0)
+				[
+					SNew(STextBlock)
+					.TextStyle(&FAppStyle::Get().GetWidgetStyle<FTextBlockStyle>("NormalText"))
+					.Text(FText::FromName(Conf.MenuName))
+				]
+			]
+			.OnGetMenuContent(FOnGetContent::CreateRaw(this, &FAutoMenusModule::MakeToolBarMenuContent, MenuName, Conf))
+		];
+}
+
+TSharedRef<SWidget> FAutoMenusModule::MakeToolBarMenuContent(FName MenuName, FAutoMenuConfig Conf)
+{
+	UToolMenu* Menu = UToolMenus::Get()->RegisterMenu(MenuName, NAME_None, EMultiBoxType::Menu, false);
+	GenerateMenu(Menu, FString(TEXT("")), Conf);
+
+	return UToolMenus::Get()->GenerateWidget(MenuName, FToolMenuContext());
 }
 
 void FAutoMenusModule::StartEditorWidget(UWidgetBlueprint* WidgetBlueprint)

@@ -25,6 +25,18 @@ public:
 	FName MenuLocation = "MainFrame.MainMenu";
 
 	/**
+	 * Location of the menu. Only valid for toolbar-type menus.
+	 */
+	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config")
+	TEnumAsByte<EMenuPlacement> MenuPlacement;
+
+	/**
+	 * Is this menu in a toolbar? This is needed to be stored here, because the StatusBar toolbar is not a toolbar on editor start.
+	 */
+	UPROPERTY(Config)
+	bool IsToolbarMenu;
+
+	/**
 	 * Path to the widget blueprints.
 	 */
 	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", meta=(ContentDir, RelativeToGameContentDir))
@@ -68,6 +80,8 @@ class AUTOMENUS_API UAutoMenusSettings : public UDeveloperSettings
 public:
 	UPROPERTY(Config, EditAnywhere, Category="Auto Menus", meta=(TitleProperty="MenuName"))
 	TArray<FAutoMenuConfig> MenuConfig;
+
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 
 	UAutoMenusSettings();
 };
