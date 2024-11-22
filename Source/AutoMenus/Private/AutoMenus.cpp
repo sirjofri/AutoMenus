@@ -27,24 +27,14 @@ void FAutoMenusModule::StartupModule()
 	MetaDataTagsForAssetRegistry.Add(NAME_MenuSectionTag);
 	MetaDataTagsForAssetRegistry.Add(NAME_TabNameTag);
 	MetaDataTagsForAssetRegistry.Add(NAME_ToolTipTag);
-	
-	for (FAutoMenuConfig conf : GetConfig()->MenuConfig) {
-		if (conf.MenuName.IsNone())
-			continue;
-		if (conf.MenuLocation.IsNone())
-			continue;
-		if (conf.MenuEntryPath.Path.IsEmpty())
-			continue;
 
-		UToolMenu* Menu = UToolMenus::Get()->ExtendMenu(conf.MenuLocation);
-		FToolMenuSection& sec = Menu->FindOrAddSection(conf.MenuSection);
-		FToolMenuEntry& entry = sec.AddSubMenu(conf.MenuName, FText::FromName(conf.MenuName), FText::GetEmpty(), FNewToolMenuDelegate::CreateRaw(this, &FAutoMenusModule::GenerateMenu, FString(TEXT("")), conf));
-		entry.InsertPosition = FToolMenuInsert(conf.InsertLocation, conf.InsertType);
-	}
+	GetMutableDefault<UAutoMenusSettings>()->OnSettingChanged().AddRaw(this, &FAutoMenusModule::ReloadTopLevelMenus);
+	GenerateTopLevelMenus();
 }
 
 void FAutoMenusModule::ShutdownModule()
 {
+	RemoveTopLevelMenus();
 }
 
 void FAutoMenusModule::GenerateMenu(UToolMenu* ToolMenu, FString Path, FAutoMenuConfig Config)
@@ -122,6 +112,48 @@ void FAutoMenusModule::OnObjectPreSave(UObject* Object, FObjectPreSaveContext Ob
 	metadata->SetValue(WidgetBlueprint, NAME_TabNameTag, *title);
 	metadata->SetValue(WidgetBlueprint, NAME_ToolTipTag, *GetTooltipText(WidgetBlueprint));
 	metadata->SetValue(WidgetBlueprint, NAME_MenuSectionTag, *GetMenuSection(WidgetBlueprint));
+}
+
+void FAutoMenusModule::ReloadTopLevelMenus(UObject* Object, FPropertyChangedEvent& PropertyChangedEvent)
+{
+	RemoveTopLevelMenus();
+	GeneratedMenus.Reserve(GetConfig()->MenuConfig.Num());
+	GenerateTopLevelMenus();
+}
+
+void FAutoMenusModule::RemoveTopLevelMenus()
+{
+	for (TTuple<FName,FAutoMenuConfig> kv : GeneratedMenus) {
+		UToolMenus::Get()->RemoveMenu(kv.Key);
+		UToolMenus::Get()->RemoveEntry(kv.Value.MenuLocation, kv.Value.MenuSection, kv.Key);
+		
+		UToolMenu* Menu = UToolMenus::Get()->ExtendMenu(kv.Value.MenuLocation);
+		FToolMenuSection* Section = Menu->FindSection(kv.Value.MenuSection);
+		if (Section && Section->Blocks.IsEmpty())
+			Menu->RemoveSection(kv.Value.MenuSection);
+	}
+	GeneratedMenus.Empty();
+}
+
+void FAutoMenusModule::GenerateTopLevelMenus()
+{
+	for (FAutoMenuConfig conf : GetConfig()->MenuConfig) {
+		if (conf.MenuName.IsNone())
+			continue;
+		if (conf.MenuLocation.IsNone())
+			continue;
+		if (conf.MenuEntryPath.Path.IsEmpty())
+			continue;
+
+		FName MenuName = FName(TEXT("AutoMenus_") + conf.MenuName.ToString());
+		GeneratedMenus.Add(MenuName, conf);
+		UToolMenu* Menu = UToolMenus::Get()->ExtendMenu(conf.MenuLocation);
+		FToolMenuSection& sec = Menu->FindOrAddSection(conf.MenuSection);
+		sec.Label = FText::FromName(conf.MenuSection);
+		FToolMenuEntry& entry = sec.AddSubMenu(MenuName, FText::FromName(conf.MenuName), FText::GetEmpty(), FNewToolMenuDelegate::CreateRaw(this, &FAutoMenusModule::GenerateMenu, FString(TEXT("")), conf));
+		entry.InsertPosition = FToolMenuInsert(conf.InsertLocation, conf.InsertType);
+	}
+	UToolMenus::Get()->RefreshAllWidgets();
 }
 
 void FAutoMenusModule::StartEditorWidget(UWidgetBlueprint* WidgetBlueprint)

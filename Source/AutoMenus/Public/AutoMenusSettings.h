@@ -15,19 +15,19 @@ public:
 	/**
 	 * This is the visual name of the menu.
 	 */
-	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", meta=(ConfigRestartRequired="true"))
+	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config")
 	FName MenuName;
 
 	/**
 	 * This is the location of the menu.
 	 */
-	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", meta=(ConfigRestartRequired="true"))
+	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config")
 	FName MenuLocation = "MainFrame.MainMenu";
 
 	/**
 	 * Path to the widget blueprints.
 	 */
-	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", meta=(ContentDir, RelativeToGameContentDir, ConfigRestartRequired="true"))
+	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", meta=(ContentDir, RelativeToGameContentDir))
 	FDirectoryPath MenuEntryPath;
 
 	/**
@@ -35,7 +35,7 @@ public:
 	 *
 	 * Use this to map an automatically generated submenu to a specific menu section.
 	 */
-	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", meta=(ConfigRestartRequired="true"), AdvancedDisplay)
+	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", AdvancedDisplay)
 	TMap<FString,FName> FolderSectionMapping;
 
 	/**
@@ -43,19 +43,19 @@ public:
 	 *
 	 * This is important if the menu is a submenu of another menu, for example, a submenu within the "Tools" menu.
 	 */
-	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", AdvancedDisplay, meta=(ConfigRestartRequired="true"), AdvancedDisplay)
+	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", AdvancedDisplay, AdvancedDisplay)
 	FName MenuSection = NAME_None;
 
 	/**
 	 * Use this to specify where exactly to place the menu inside its parent menu.
 	 */
-	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", AdvancedDisplay, meta=(ConfigRestartRequired="true"), AdvancedDisplay)
+	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", AdvancedDisplay, AdvancedDisplay)
 	FName InsertLocation = NAME_None;
 
 	/**
 	 * Location relative to the Insert Location.
 	 */
-	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", AdvancedDisplay, meta=(ConfigRestartRequired="true"), AdvancedDisplay)
+	UPROPERTY(Config, EditAnywhere, Category="Auto Menu Config", AdvancedDisplay, AdvancedDisplay)
 	EToolMenuInsertType InsertType = EToolMenuInsertType::Default;
 };
 

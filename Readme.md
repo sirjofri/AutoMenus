@@ -13,7 +13,7 @@ Screenshots, ...
 - Features menus, submenus and sub-submenus, following your directory hierarchy.
 - Features sections within menus, for better structuring of your menu entries.
 - Configuration-less: Only configure the menus, they will be filled with your tools automatically.
-- Live: No need to restart the editor to make your tools appear when adding/changing your tools.
+- Live: No need to restart the editor.
 
 ## Usage
 
@@ -45,6 +45,7 @@ For the *Folder Section Mapping*, use relative paths. For example, `MyFancySubme
 **Common UI Extension Points:**
 
 - `MainFrame.MainMenu`: Main Menu in all windows (The one with "File, Edit, Window, Tools, Help")
+- `MainFrame.MainMenu.Tools`: "Tools" menu
 - `LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings`: Top-Right "Settings" menu in the level editor
 
 ### Configure your menu entries

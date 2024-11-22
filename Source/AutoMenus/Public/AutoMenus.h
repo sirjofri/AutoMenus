@@ -18,9 +18,14 @@ public:
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
-	
+
+private:
 	void GenerateMenu(UToolMenu* ToolMenu, FString Path, FAutoMenuConfig Config);
 	static void OnObjectPreSave(UObject* Object, FObjectPreSaveContext ObjectPreSaveContext);
+
+	void ReloadTopLevelMenus(UObject* Object, FPropertyChangedEvent& PropertyChangedEvent);
+	void RemoveTopLevelMenus();
+	void GenerateTopLevelMenus();
 
 private:
 	static void StartEditorWidget(UWidgetBlueprint* WidgetBlueprint);
@@ -32,4 +37,6 @@ private:
 	static FString GetMenuSection(const UEditorUtilityWidgetBlueprint* WidgetBlueprint);
 
 	static const UAutoMenusSettings* GetConfig();
+
+	TMap<FName,FAutoMenuConfig> GeneratedMenus;
 };
