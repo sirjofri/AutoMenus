@@ -6,7 +6,11 @@
 #include "EditorUtilitySubsystem.h"
 #include "EditorUtilityWidget.h"
 #include "EditorUtilityWidgetBlueprint.h"
+#include "ToolMenus.h"
 #include "Engine/AssetManager.h"
+#include "Framework/Application/SlateApplication.h"
+#include "UObject/MetaData.h"
+#include "Widgets/Input/SComboButton.h"
 
 DEFINE_LOG_CATEGORY(LogAutoMenus);
 

@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Object.h"
+#include "ToolMenuMisc.h"
+#include "Engine/DeveloperSettings.h"
 #include "AutoMenusSettings.generated.h"
 
 USTRUCT()

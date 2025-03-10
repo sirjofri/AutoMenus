@@ -26,6 +26,7 @@ public class AutoMenus : ModuleRules
 				"Core",
 				"DeveloperSettings",
 				"EditorSubsystem",
+				"ToolMenus",
 			}
 			);
 			

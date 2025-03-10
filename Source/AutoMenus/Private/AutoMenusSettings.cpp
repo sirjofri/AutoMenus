@@ -3,6 +3,10 @@
 
 #include "AutoMenusSettings.h"
 
+#include "ToolMenu.h"
+#include "ToolMenus.h"
+#include "Framework/MultiBox/MultiBoxDefs.h"
+
 void UAutoMenusSettings::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
 {
 	auto IsToolbar = [](EMultiBoxType Type)

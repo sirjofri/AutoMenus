@@ -6,6 +6,8 @@
 #include "AutoMenusSettings.h"
 #include "Modules/ModuleManager.h"
 
+enum class EMultiBoxType : uint8;
+class UToolMenu;
 class UEditorUtilityWidgetBlueprint;
 class UWidgetBlueprint;
 class UEditorUtilityWidget;
