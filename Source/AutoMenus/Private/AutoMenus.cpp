@@ -1,4 +1,4 @@
-﻿// Copyright sirjofri. Licensed under MIT license. See License.txt for full license text.
+﻿// Copyright sirjofri. See License.txt for full license text.
 
 #include "AutoMenus.h"
 
@@ -177,7 +177,10 @@ bool FAutoMenusModule::MenuTypeNeedsWidget(EMultiBoxType Type)
 	|| Type == EMultiBoxType::UniformToolBar
 	|| Type == EMultiBoxType::VerticalToolBar
 	|| Type == EMultiBoxType::SlimHorizontalToolBar
-	|| Type == EMultiBoxType::SlimHorizontalUniformToolBar;
+#if (ENGINE_MAJOR_VERSION == 5) && (ENGINE_MINOR_VERSION >= 3)
+	|| Type == EMultiBoxType::SlimHorizontalUniformToolBar
+#endif
+	;
 }
 
 TSharedRef<SWidget> FAutoMenusModule::MakeToolBarWidget(FName MenuName, const FAutoMenuConfig& Conf)

@@ -1,4 +1,4 @@
-﻿// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright sirjofri. See License.txt for full license text.
 
 using UnrealBuildTool;
 

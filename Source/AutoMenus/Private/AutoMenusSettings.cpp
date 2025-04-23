@@ -1,4 +1,4 @@
-// Copyright Lightword Productions GmbH. All rights reserved.
+// Copyright sirjofri. See License.txt for full license text.
 
 
 #include "AutoMenusSettings.h"
@@ -15,7 +15,10 @@ void UAutoMenusSettings::PostEditChangeProperty(struct FPropertyChangedEvent& Pr
 		|| Type == EMultiBoxType::UniformToolBar
 		|| Type == EMultiBoxType::VerticalToolBar
 		|| Type == EMultiBoxType::SlimHorizontalToolBar
-		|| Type == EMultiBoxType::SlimHorizontalUniformToolBar;
+#if (ENGINE_MAJOR_VERSION == 5) && (ENGINE_MINOR_VERSION >= 3)
+		|| Type == EMultiBoxType::SlimHorizontalUniformToolBar
+#endif
+		;
 	};
 
 	for (FAutoMenuConfig& conf : MenuConfig) {
