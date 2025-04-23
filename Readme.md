@@ -48,6 +48,7 @@ For the *Folder Section Mapping*, use relative paths. For example, `MyFancySubme
 - `MainFrame.MainMenu.Tools`: "Tools" menu
 - `LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings`: Top-Right "Settings" menu in the level editor
 - `LevelEditor.StatusBar.ToolBar`: Bottom status bar, next to "Revision Control". **Bug:** Insert location doesn't work properly.
+- Use `ToolMenus.Edit` to find more extension points.
 
 ### Configure your menu entries
 

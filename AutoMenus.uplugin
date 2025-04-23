@@ -1,10 +1,10 @@
 ﻿{
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.0",
+	"VersionName": "0.1.0",
 	"FriendlyName": "AutoMenus",
 	"Description": "Automatically create menus for your editor utility widget tools",
-	"Category": "Other",
+	"Category": "Editor",
 	"CreatedBy": "sirjofri",
 	"CreatedByURL": "https://sirjofri.de",
 	"DocsURL": "https://github.com/sirjofri/AutoMenus/blob/main/Readme.md",

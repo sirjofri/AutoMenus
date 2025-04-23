@@ -1,0 +1,24 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <pattern id="row" x="0" y="0" width="10" height="3">
+            <rect x="1" y="1" width="1" height="1" stroke="#000" stroke-width="0.1" fill="#ccc"/>
+            <rect x="3" y="1" width="6" height="1" stroke="#000" stroke-width="0.1" fill="#ccc"/>
+        </pattern>
+        <pattern id="bg" x="0" y="0" width="10" height="11">
+            <rect x="1" y="1" width="10" height="11" rx="0.1" ry="0.1" fill="#555" stroke="#000" stroke-width="0.1"/>
+            <rect x="1" y="1" width="10" height="3" fill="url(#row)"/>
+            <rect x="1" y="3" width="10" height="3" fill="url(#row)"/>
+            <rect x="1" y="5" width="10" height="3" fill="url(#row)"/>
+            <rect x="1" y="7" width="10" height="3" fill="url(#row)"/>
+            <rect x="1" y="9" width="10" height="3" fill="url(#row)"/>
+        </pattern>
+    </defs>
+    
+    <rect x="0" y="0" width="12" height="13" fill="url(#bg)" fill-opacity="0.8"/>
+    
+    <polygon points="19,1 19,19 16,19 16,7 4,19 1,19" fill="#000" stroke="#fff" stroke-width="0.1" stroke-opacity="0.5"/>
+    
+    <rect x="7" y="10" width="10" height="5" rx="0.1" ry="0.1" fill="#555" stroke="#000" stroke-width="0.1"/>
+    <rect x="7" y="10" width="10" height="3" fill="url(#row)"/>
+    <rect x="7" y="12" width="10" height="3" fill="url(#row)"/>
+</svg>
