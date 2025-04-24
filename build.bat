@@ -2,7 +2,7 @@ setlocal
 
 md BuildResults
 md %temp%\AutoMenus
-for %%a in (5.1 5.2 5.3 5.4 5.5) do call :build %%a
+for %%a in (5.0 5.1 5.2 5.3 5.4 5.5) do call :build %%a
 rd /s /q %temp%\AutoMenus
 goto :eof
 

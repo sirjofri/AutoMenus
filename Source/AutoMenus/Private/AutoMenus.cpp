@@ -275,15 +275,24 @@ TArray<FAssetData> FAutoMenusModule::GetMenuEntries(const FString& Folder)
 	const IAssetRegistry& AssetRegistry = UAssetManager::Get().GetAssetRegistry();
 	FARFilter Filter;
 	Filter.PackagePaths.Add(FName(Folder));
+#if (ENGINE_MAJOR_VERSION == 5) && (ENGINE_MINOR_VERSION < 1)
+	Filter.ClassNames.Add(UEditorUtilityWidgetBlueprint::StaticClass()->GetFName());
+#else
 	Filter.ClassPaths.Add(UEditorUtilityWidgetBlueprint::StaticClass()->GetClassPathName());
+#endif
 	Filter.bRecursiveClasses = true;
 	Filter.bRecursivePaths = true;
 	TArray<FAssetData> AssetData;
 	AssetRegistry.GetAssets(Filter, AssetData);
 
 	for (FAssetData a : AssetData) {
+#if (ENGINE_MAJOR_VERSION == 5) && (ENGINE_MINOR_VERSION < 1)
+		if (a.AssetClass != UEditorUtilityWidgetBlueprint::StaticClass()->GetFName())
+			continue;
+#else
 		if (a.AssetClassPath != UEditorUtilityWidgetBlueprint::StaticClass()->GetClassPathName())
 			continue;
+#endif
 		
 		Ret.Add(a);
 	}
