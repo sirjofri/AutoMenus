@@ -5,6 +5,7 @@
 
 #include "ToolMenu.h"
 #include "ToolMenus.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "Framework/MultiBox/MultiBoxDefs.h"
 
 void UAutoMenusSettings::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)

@@ -58,6 +58,7 @@ All configuration of the menu entries happens within the widget blueprints thems
 
 - The `Tab Display Name` of your tool will be used to set the menu entry title.
   - **If you don't set a tab name, the widget will be hidden from the menu!**
+  - Unreal 5.1 and earlier don't have that property. You can create a _String_ property named `TabDisplayName` instead. The other rules apply.
 - The property `Tool Tip Text` will be used as a tool tip for that entry.
 - You can create a *Name* property named `MenuSection`, which will be used to group your entries.
 

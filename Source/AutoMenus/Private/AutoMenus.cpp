@@ -10,6 +10,7 @@
 #include "Engine/AssetManager.h"
 #include "Framework/Application/SlateApplication.h"
 #include "UObject/MetaData.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "Widgets/Input/SComboButton.h"
 
 DEFINE_LOG_CATEGORY(LogAutoMenus);
@@ -18,6 +19,7 @@ DEFINE_LOG_CATEGORY(LogAutoMenus);
 
 inline static const FName NAME_ToolTipProperty(TEXT("ToolTipText"));
 inline static const FName NAME_MenuSectionProperty(TEXT("MenuSection"));
+inline static const FName NAME_LegacyTabTitleProperty(TEXT("TabDisplayName"));
 
 inline static const FName NAME_MenuSectionTag(TEXT("AutoMenus.MenuSection"));
 inline static const FName NAME_TabNameTag(TEXT("AutoMenus.TabName"));
@@ -294,7 +296,20 @@ FString FAutoMenusModule::GetWidgetTitle(const UEditorUtilityWidgetBlueprint* Wi
 	if (!WidgetBlueprint)
 		return TEXT("");
 	UEditorUtilityWidget* Widget = WidgetBlueprint->GeneratedClass->GetDefaultObject<UEditorUtilityWidget>();
+#if (ENGINE_MAJOR_VERSION >= 5) && (ENGINE_MINOR_VERSION > 1)
 	return Widget->GetTabDisplayName().ToString();
+#else
+
+	FString TabTitle = TEXT("");
+	for (TFieldIterator<FStrProperty> It(Widget->GetClass()); It; ++It) {
+		if (It->GetFName() == NAME_LegacyTabTitleProperty) {
+			TabTitle = It->GetPropertyValue(It->ContainerPtrToValuePtr<FString>(Widget));
+			break;
+		}
+	}
+	return TabTitle;
+
+#endif
 }
 
 FString FAutoMenusModule::GetTooltipText(const UEditorUtilityWidgetBlueprint* WidgetBlueprint)
