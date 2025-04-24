@@ -29,8 +29,6 @@ private:
 	void RemoveTopLevelMenus();
 	void GenerateTopLevelMenus();
 
-	static bool MenuTypeNeedsWidget(EMultiBoxType Type);
-
 	TSharedRef<SWidget> MakeToolBarWidget(FName MenuName, const FAutoMenuConfig& Conf);
 	TSharedRef<SWidget> MakeToolBarMenuContent(FName MenuName, FAutoMenuConfig Conf);
 

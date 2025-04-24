@@ -171,18 +171,6 @@ void FAutoMenusModule::GenerateTopLevelMenus()
 	UToolMenus::Get()->RefreshAllWidgets();
 }
 
-bool FAutoMenusModule::MenuTypeNeedsWidget(EMultiBoxType Type)
-{
-	return Type == EMultiBoxType::ToolBar
-	|| Type == EMultiBoxType::UniformToolBar
-	|| Type == EMultiBoxType::VerticalToolBar
-	|| Type == EMultiBoxType::SlimHorizontalToolBar
-#if (ENGINE_MAJOR_VERSION == 5) && (ENGINE_MINOR_VERSION >= 3)
-	|| Type == EMultiBoxType::SlimHorizontalUniformToolBar
-#endif
-	;
-}
-
 TSharedRef<SWidget> FAutoMenusModule::MakeToolBarWidget(FName MenuName, const FAutoMenuConfig& Conf)
 {
 	return SNew(SHorizontalBox)
@@ -264,7 +252,8 @@ void FAutoMenusModule::AddEntryToMenu(UToolMenu* ToolMenu, FAssetData AssetData)
 	sec.AddMenuEntry(FName(title), FText::FromString(title), ToolTipText, FSlateIcon(),
 		FUIAction(FExecuteAction::CreateLambda([&](FString InAssetPath)
 		{
-			const TSoftObjectPtr<UObject> LocalObjPtr(InAssetPath + TEXT(".") + FPaths::GetBaseFilename(InAssetPath));
+			FSoftObjectPath SoftObjectPath(InAssetPath + TEXT(".") + FPaths::GetBaseFilename(InAssetPath));
+			const TSoftObjectPtr<UObject> LocalObjPtr(SoftObjectPath);
 			UObject* o = LocalObjPtr.LoadSynchronous();
 			if (FSlateApplication::Get().GetModifierKeys().IsShiftDown()) {
 				GEditor->EditObject(o);
