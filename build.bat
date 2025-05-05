@@ -16,6 +16,7 @@ rd /s /q %temp%\AutoMenus\%1\Binaries
 rd /s /q %temp%\AutoMenus\%1\Intermediate
 md %temp%\AutoMenus\%1\Config
 copy Config\FilterPlugin.ini %temp%\AutoMenus\%1\Config\FilterPlugin.ini
+powershell -Command "(gc %temp%\AutoMenus\%1\AutoMenus.uplugin) -replace 'MarketplaceURL', 'FabURL' | Out-File -encoding ASCII %temp%\AutoMenus\%1\AutoMenus.uplugin"
 del BuildResults\AutoMenus-%1.zip
 tar -a -c -f BuildResults\AutoMenus-%1.zip -C %temp%\AutoMenus\%1\ *
 goto :eof
