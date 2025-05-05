@@ -4,12 +4,12 @@ This plugin generates menus for your Editor Widget Blueprints (Blutility), prese
 
 ## Media
 
-Screenshots, ...
+![splash image](Documentation/splash.png)
 
 ## Features
 
 - You can define multiple menus at different locations throughout the editor, using UI extension points.
-- It will automatically extract window title, tooltip and section from your blueprints (resave required).
+- It will automatically extract the window title, tooltip and section from your blueprints (resave required).
 - Features menus, submenus and sub-submenus, following your directory hierarchy.
 - Features sections within menus, for better structuring of your menu entries.
 - Configuration-less: Only configure the menus, they will be filled with your tools automatically.
@@ -19,7 +19,7 @@ Screenshots, ...
 
 Basic usage for the end user is, navigate the menu hierarchy and click on buttons.
 
-Advanced usage means, placing new tool files into the proper folder structure, setting custom values to override menu entry details (e.g. tooltip), using shift-click to edit tools.
+Advanced usage means placing new tool files into the proper folder structure, setting custom values to override menu entry details (e.g. tooltip), using shift-click to edit tools.
 
 ## Configuration
 
