@@ -9,9 +9,13 @@
 #include "ToolMenus.h"
 #include "Engine/AssetManager.h"
 #include "Framework/Application/SlateApplication.h"
-#include "UObject/MetaData.h"
 #include "Runtime/Launch/Resources/Version.h"
+#include "Runtime/Core/Public/Misc/EngineVersionComparison.h"
 #include "Widgets/Input/SComboButton.h"
+
+#if UE_VERSION_OLDER_THAN(5, 6, 0)
+#include "UObject/MetaData.h"
+#endif
 
 DEFINE_LOG_CATEGORY(LogAutoMenus);
 
@@ -107,10 +111,10 @@ void FAutoMenusModule::OnObjectPreSave(UObject* Object, FObjectPreSaveContext Ob
 	const UEditorUtilityWidgetBlueprint* WidgetBlueprint = Cast<UEditorUtilityWidgetBlueprint>(Object);
 	if (!WidgetBlueprint)
 		return;
-
-	UMetaData* metadata = WidgetBlueprint->GetPackage()->GetMetaData();
 	
 	FString title = GetWidgetTitle(WidgetBlueprint);
+#if UE_VERSION_OLDER_THAN(5, 6, 0)
+	UMetaData* metadata = WidgetBlueprint->GetPackage()->GetMetaData();
 	if (title.IsEmpty()) {
 		// if we have no dedicated tab name, assume this is a helper widget (button, ...)
 		metadata->RemoveValue(WidgetBlueprint, NAME_TabNameTag);
@@ -122,6 +126,20 @@ void FAutoMenusModule::OnObjectPreSave(UObject* Object, FObjectPreSaveContext Ob
 	metadata->SetValue(WidgetBlueprint, NAME_TabNameTag, *title);
 	metadata->SetValue(WidgetBlueprint, NAME_ToolTipTag, *GetTooltipText(WidgetBlueprint));
 	metadata->SetValue(WidgetBlueprint, NAME_MenuSectionTag, *GetMenuSection(WidgetBlueprint));
+#else /* UE 5.6+ */
+	FMetaData& metadata = WidgetBlueprint->GetPackage()->GetMetaData();
+	if (title.IsEmpty()) {
+		// if we have no dedicated tab name, assume this is a helper widget (button, ...)
+		metadata.RemoveValue(WidgetBlueprint, NAME_TabNameTag);
+		metadata.RemoveValue(WidgetBlueprint, NAME_ToolTipTag);
+		metadata.RemoveValue(WidgetBlueprint, NAME_MenuSectionTag);
+		return;
+	}
+
+	metadata.SetValue(WidgetBlueprint, NAME_TabNameTag, *title);
+	metadata.SetValue(WidgetBlueprint, NAME_ToolTipTag, *GetTooltipText(WidgetBlueprint));
+	metadata.SetValue(WidgetBlueprint, NAME_MenuSectionTag, *GetMenuSection(WidgetBlueprint));
+#endif
 }
 
 void FAutoMenusModule::ReloadTopLevelMenus(UObject* Object, FPropertyChangedEvent& PropertyChangedEvent)
